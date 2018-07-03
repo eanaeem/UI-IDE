@@ -12,15 +12,33 @@
     "editor.detectIndentation": false,  
     "editor.insertSpaces": true,  
     "editor.tabSize": 3,  
-    "editor.fontSize": 13,  
+    "editor.fontFamily": "'Andale Mono', 'Lucida Console'",  
+    "editor.fontSize": 14,  
     "editor.fontLigatures": true,  
-    "window.zoomLevel": -0.5,  
+    "git.autofetch": true,  
     "terminal.integrated.fontSize": 12,  
+    "terminal.integrated.fontFamily": "Monaco",  
+    "window.zoomLevel": -0.5,  
+    "workbench.colorTheme": "Default Dark+",  
+    "workbench.iconTheme": "material-icon-theme",  
+    "javascript.validate.enable": false, // if not using TS  
+    "flow.enabled": true,  
+    "flow.useNPMPackagedFlow": true,  
+    "flow.pathToFlow": "../node_modules/.bin/flow", // or install npm i flow-bin -g  
+    "gitlens.advanced.messages": {  
+      "suppressShowKeyBindingsNotice": true  
+   },  
+   "files.watcherExclude": {  
+      "**/tmp/**": true,  
+      "**/node_modules/**": true,  
+      "**/bower_components/**": true  
+   }  
   }
 - WORKSPACE SETTINGS: {  
     "javascript.validate.enable": false, // if not using TS  
+    "flow.enabled": true,  
     "flow.useNPMPackagedFlow": true,  
-    "flow.pathToFlow": "${workspaceRoot}/node_modules/.bin/flow" // or install npm i flow-bin -g  
+    "flow.pathToFlow": "${workspaceFolder}/node_modules/.bin/flow" // or install npm i flow-bin -g  
   }
 
 ### Sublime ###
@@ -38,14 +56,22 @@ Seti_UI, Materialize, Tomorrow Color Schemes, Predawn, Monokai - Spacegray
 - Atom-Typescript: https://github.com/TypeStrong/atom-typescript  
 Atom-React: https://github.com/orktes/atom-react (clone into .atom\packages folder)  
 Install: file-icons, atom-json-color, atom-bracket-highlight,  
+Use: UITheme='One Dark', SyntaxTheme='One Light'  
 Stylesheet:  
-  .tree-view { /* background-color: whitesmoke; */ font-size: 10px; }  
-  .bracket-matcher {
-    position: absolute;
-    top: -1px;
-    border-bottom: 1px solid lime;
-    border: 1px solid rgba(0, 255, 0, 0.7);
-    // background-color: rgba(150, 255, 150, 0.3);
+  .tree-view {  
+    font-size: 10px; 
+  }  
+  atom-text-editor {  
+    background-color: #f7f3ea;  
+    font-family: Monaco;  
+    font-size: 13px;  
+  }  
+  .bracket-matcher {  
+    position: absolute;  
+    top: -1px;  
+    border-bottom: 1px solid lime;  
+    border: 1px solid rgba(0, 255, 0, 0.7);  
+    // background-color: rgba(150, 255, 150, 0.3);  
   }  
 
 - - - -
@@ -68,21 +94,23 @@ Stylesheet:
 ## ~/.bash_profile ##
 export CLICOLOR=1  
 export LSCOLORS=ExFxBxDxCxegedabagacad  
-export PATH=~/Downloads/mongodb/bin:$PATH  
+export PATH=~/...../mongodb/bin:$PATH  
+export PS1='\[\033[01;32m\]${PWD} \[\033[00m\]λ '  
 alias l='ls -CF'  
 alias la='ls -a'  
 alias ll='ls -all'  
 alias ld='ls -l'  
 alias cls='clear && printf "\e[3J"'  
-export PS1='\[\033[01;32m\]${PWD} \[\033[00m\]\$ '  
+alias pss='ps aux | grep'  
+alias mongod='mongod --dbpath ~/...../mongodb/data/db'  
 eval $(/usr/libexec/path_helper -s)  
 
 ## shortcuts ##
 AC2V2zZQ  
-F11 		=> Show desktop  
+F11	=> Show desktop  
 Cmd + Shift + . => show hidden files  
 Cmd + Q 	=> close the application without trace  
-Cmd + `		=> tab between windows of same application  
+Cmd + \`		=> tab between windows of same application  
 cp -a <_source>/. <_dest> => copy the content of the <_source> into <_dest> recursively(a) including hidden files/folders(.)  
 ln -s <_source> <_dest>	=> creates a link of <_source> in the <_dest> folder  
 chown <_user> <_file> => changes the owner of <_file> to <_user>  
@@ -95,12 +123,15 @@ $ show dbs
 $ use <db>  
 $ db  
 $ show collections  
-$ db.<collaction>.drop()  
-$ db.<collaction>.insert({…})  
+$ db.<collection>.drop()  
+$ db.<collection>.insert({…})  
 $ db.<collection>.find()  
 
 // NPM  
 $ sudo chown -R $(whoami) <path> | $(npm config get prefix)  
+
+// HomeBrew . 
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"  
 
 
 # UBUNTU #
@@ -121,10 +152,14 @@ GParted, KDE Partition Manager, UNetbootin,
 https://atom.io, 
 
 ## Scripts ##
-- NodeJs: sudo apt install nodejs  
-- NPM: sudo apt install npm  
-- GIT: sudo apt install git  
-- Chrome: sudo apt install google-chrome-stable
+- sudo apt-get update  
+- NodeJs: sudo apt-get install nodejs (may noy install the latest version)  
+  curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -  
+  sudo apt-get install -y nodejs  
+  sudo apt-get install nodejs-legacy  
+- NPM: sudo apt-get install npm  
+- GIT: sudo apt-get install git  
+- Chrome: sudo apt-get install google-chrome-stable
 - D (ntfs):  
 sudo mkdir -p /media/c  
 sudo fdisk -l (ex: sda3 is our D drive)  
@@ -293,23 +328,41 @@ if (langIds.indexOf(languageId) != -1) {
 
 panel.addWidget("org.kde.plasma.systemtray")
 panel.addWidget("org.kde.plasma.digitalclock")
-
-
+  
+  
 - - - -
 - - - -
 
-$ git config credential.helper store  
-$ git push http://example.com/repo.git  
-Username: <type your username>  
-Password: <type your password>
+# AWS #
 
+## Installations ##
+sudo apt-get update  
+sudo apt-get git  
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -  
+sudo apt-get install -y nodejs  
+sudo apt-get install -y nodejs-legacy  
+sudo apt-get install build-essential  
+sudo apt-get npm  
 
+## Deployment ##
+$ ssh -i \~/.ssh/lh-accountancy-dev.pem ubuntu@ec2-35-177-20-202.eu-west-2.compute.amazonaws.com  
+$ tar -cvzf lh-accountancy.tar.gz lh-accountancy  
+$ scp -i \~/.ssh/lh-accountancy-dev.pem lh-accountancy.tar.gz ubuntu@ec2-35-177-20-202.eu-west-2.compute.amazonaws.com:\~  
+$ sudo tar -xzvf lh-accountancy.tar.gz  
+$ npm run build-dev (export NODE_ENV=dev)  
+$ npm run publish-dev > ../lh-accountancy.log 2>&1 &  
+$ nohup node ./lh-accountancy/dist/src/index.js > lh-accountancy.log 2>&1 &  
+  
+  
 - - - -
 - - - -
 
 # COMMON #
 
-## Terminal ##
-- RGB(0, 43, 54): Turkuaz
-- RGB(0, 43, 0): Green
-- RGB(26, 26, 26): Grey
+## Git ##
+$ git config credential.helper store  
+$ git config --global credential.helper cache  
+$ git push http://example.com/repo.git  
+Username: <type your username>  
+Password: <type your password>  
+  

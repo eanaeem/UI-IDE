@@ -10,16 +10,16 @@
 - A function that is the property of an object is called its *method*.
 - *First Class Function*: You can use functions like strings, numbers etc. (ie. assign as a value to a variable, passed as an argument to other function or return by another function).
 - To create a function we can use:
-    * *Function Declaration*: Can only exist as a *statement* and should start with the keyword. When it is executed it doesn't do anything. They are *hoisted*.  
-function func() { /\* ... \*/ }  
-    * *Function Expression*: When it is executed it returns an object, as other expressions. They are *not hoisted* but their variables are hoisted.  
-var func = function() { /\* ... \*/ };  
+    - *Function Declaration*: Can only exist as a *statement* and should start with the keyword. When it is executed it doesn't do anything. They are *hoisted*.  
+`function func() { ... }`  
+    - *Function Expression*: When it is executed it returns an object, as other expressions. They are *not hoisted* but their variables are hoisted.  
+`var func = function() { ... };`  
 - The function has full access to the outer variable. It can modify it as well.  
 If a same-named variable is declared inside the function then it *shadows* the outer one.  
 - Values passed to a function as parameters are copied to its local variables (pass-by-value). If the parameter is an object, you can update its properties.  
-    * *.bind(thisArg, param1, param2 ...)*: creates a new function that, when called, has its *this* keyword set to the provided value, with a given sequence of arguments preceding any provided when the new function is called.
-    * *.call(thisArg, param1, param2 ...)*: calls a function with a given *this* value and arguments provided individually.
-    * *.apply(thisArg, [param1, param2 ...])*: calls a function with a given *this* value, and arguments provided as an array (or an array-like object).
+    - `.bind(thisArg, p1, p2, p3 ...)`: creates a new function that, when called, has its *this* keyword set to the provided value, with a given sequence of arguments preceding any provided when the new function is called.
+    - `.call(thisArg, p1, p2, p3 ...)`: calls a function with a given *this* value and arguments provided individually.
+    - `.apply(thisArg, [p1, p2, p3 ...])`: calls a function with a given *this* value, and arguments provided as an array (or an array-like object).
 
 ```javascript
 // function statement
@@ -89,62 +89,36 @@ function f() {
 ```
 
 ### HOISTING ###
+
 JS engine sets up memory space for variable and function declerations (it moves the declerations to the beginning of their direct scopes).  
 In JS, declerations (variable and function) are hoisted but assignment are not.  
 
 ### CLOSURE ###
 
-- A *closure* is a function that remembers its outer variables and can access them.
-- If a function leaves the scope in which it was created, it stays connected to the variables of that scope (and of the surrounding scopes). For example:
-```javascript
-function createInc(startValue) {
-   return function (step) {
-      startValue += step;
-      return startValue;
-   };
-}
-```
-- The function returned by createInc() does not loose its connection to startValue—the variable provides the function with state that persists across function calls:
-```
-> var inc = createInc(5);
-> inc(1)
-  6
-> inc(2)
-  8
-```
-A closure is a function plus the connection to the scope in which the function was **created**. The name stems from the fact that a closure “closes over” the free variables of a function. A variable is free if it is not declared within the function—that is, if it comes “from outside.”
+- A *closure* is the combination of a `function` and the `lexical environment` within that function was **created**.  
+- The name comes from the fact that a closure `closes over` the free variables of a function. A variable is free if it is not declared within the function—that is, if it comes `from outside`.  
 
 ```javascript
-var result = [];
-for (var i=0; i < 5; i++) {
-   result.push( function () { return i } );  // (1)
-}
-console.log(result[1]());  // 5 (not 1)
-console.log(result[3]());  // 5 (not 3)
-
-for (var i=0; i < 5; i++) {
-   (function () {
-      var i2 = i;
-      result.push( function () { return i2 } );
-   }());
-}
-```
-
-```javascript
-function sayHiLater() {
-   var greeting = 'Hi';
-   setTimeout(function() {
-      console.log( greeting );
-   }, 2000);
-}
-sayHiLater();
+// Module pattern
+var testModule = (function () {
+  var counter = 0;
+  return {
+    incrementCounter: function () {
+      return counter++;
+    },
+    resetCounter: function () {
+      console.log( "counter value prior to reset: " + counter );
+      counter = 0;
+    }
+  };
+})();
 ```
 
 ### JS ENGINE ###
 
 - Google's V8 engine is used in Chrome and Node.js.  The engine consists of two main components:
-    - *Memory Heap*: this is where memory allocation happens.
-    - *Call Stack*: this is where your stack frames are, as your code executes.  
+  - *Memory Heap*: this is where memory allocation happens.
+  - *Call Stack*: this is where your stack frames are, as your code executes.  
 
 DOM_________\  
 AJAX_________- Web APIs which are provided by browsers, not by the Engine.  
@@ -157,15 +131,15 @@ setTimeout__/
 - *Event Loop*: It pushes the first item in the queue into the stack if the stack is empty.
 
 ```javascript
- _HEAP__       _STACK_      _WebAPIs_
-|       |     |       |    |         |
-|       |     |       |    |         |
-|       |     |       |    |         |
- -------       -------      ---------
+ _HEAP__      _STACK_        _WebAPIs_
+|       |    |       |      |         |
+|       |    |       |      |         |
+|       |    |       |      |         |
+ -------      -------        ---------
  
-              -> -- 
- Event Loop  |     |
-              -----
+                   -> -- 
+      Event Loop  |     |
+                   -----
 
  Task    ----------
  Queue  |          |
@@ -201,13 +175,14 @@ Execution Stack will be like:
 ### PROTOTYPE ###
 
 - *Inheritance*: One object gets access to the properties and methods of another object.  
-- *Prototype*: Is an object property that is automatically created for to only *functions*. It is used to build *__proto__* when the function happens to be used as a function constructor with the *new* keyword. There will be only one prototype for each object that is created from same function.  
+- *Prototype chain*: This is an extremely common JavaScript interview question. All JavaScript objects have a prototype property, that is a reference to another object. When a property is accessed on an object and if the property is not found on that object, the JavaScript engine looks at the object's prototype, and the prototype's prototype and so on, until it finds the property defined on one of the prototypes or until it reaches the end of the prototype chain, *Object.prototype*.
+All JS objects (Date, Array, Function, RegExp, ...) inherit from the Object.prototype.  
+- ***.prototype***: Is an object property that is automatically created for to only *functions*. It is used to build *\_\_proto\_\_* when the function happens to be used as a function constructor with the *new* keyword. There will be only one prototype for each object that is created from same function.  
 Prototype property of the function is not the prototype of the function. It is the prototype of the objects created by function contructor.  
-- *__proto__*: Is the actual object that is used in the lookup chain to resolve methods. It is a property that all objects have. This is the property which is used by the JS engine for inheritance. 
+- *__.\_\_proto\_\___*: Is the actual object that is used in the lookup chain to resolve methods. It is a property that all objects have. This is the property which is used by the JS engine for inheritance. 
 *Why prototype*: Because functions are objects if we define getFullname() in Person every object will have it and this means more memory space. We don't need this for methods. But if we use it in prototype there will be only one definition.   
 
-Objects created using an object literal, or with new Object(), inherit from a prototype called *Object.prototype*. The Object.prototype is on the top of the prototype chain. All JS objects (Date, Array, Function, RegExp, ...) inherit from the Object.prototype.  
-*Prototype chain*: If a property or method is not in an object JS engine looks at its prototype.  
+ 
 
 ```javascript
 function Person(fname, lname) {
@@ -302,11 +277,11 @@ if(!Object.create) {
 
 # FUNCTIONAL PROGRAMMING #
 
-- *Declerative Paradigm*: WHAT | *Imperative Paradigm*: HOW
+- *Imperative Paradigm* (HOW) -> *Declerative Paradigm* (WHAT)  
 - *Immutable Data*: 
    - Data cannot be changed after it's created (return a new copy: .map(), .filter())
 - *First Class Function*:
-   - User functions as arguments.
+   - Use functions as arguments.
    - Functions can be assigned as variables.
 - *Pure Function*:
    - With same inputs you always get same outputs.
@@ -316,12 +291,13 @@ if(!Object.create) {
    - If it modifies any data outside it's scope (api call, file system, )
 
 ```javascript
-// Declerative (WHAT)   |  // Imperative (HOW)
-users.map(u => {        |  for(var i=0; i<users.length; i++) {
-   u.city = 'london';   |     users[i].city = 'london';
-   return u;            |  }
-});                     |
+// Imperative (HOW)                  |  // Declerative (WHAT)
+for(var i=0; i<users.length; i++) {  |  users.map(u => {  
+  users[i].city = 'london';          |    u.city = 'london';  
+}                                    |    return u;
+                                     |  });
 ```
+
 ```javascript
 /*
  * Task: Reduce every item by 1 and then
